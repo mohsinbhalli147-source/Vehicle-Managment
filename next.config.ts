@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  // Skip static optimization for dynamic routes
+  trailingSlash: true,
 };
 
 export default nextConfig;
