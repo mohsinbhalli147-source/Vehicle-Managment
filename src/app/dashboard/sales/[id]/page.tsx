@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { supabase } from '@/lib/supabase'
-import { useRouter, useParams } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { ArrowLeft, DollarSign, Calendar, User, Package, CreditCard, Plus } from 'lucide-react'
 import Link from 'next/link'
 
@@ -35,7 +35,6 @@ interface Sale {
 }
 
 export default function SaleDetailPage() {
-  const router = useRouter()
   const params = useParams()
   const [sale, setSale] = useState<Sale | null>(null)
   const [loading, setLoading] = useState(true)
@@ -43,12 +42,6 @@ export default function SaleDetailPage() {
   const [paymentAmount, setPaymentAmount] = useState('')
   const [paymentNotes, setPaymentNotes] = useState('')
   const [recordingPayment, setRecordingPayment] = useState(false)
-
-  useEffect(() => {
-    if (params.id) {
-      fetchSale(params.id as string)
-    }
-  }, [params.id])
 
   const fetchSale = async (id: string) => {
     try {
@@ -112,6 +105,13 @@ export default function SaleDetailPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (params.id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchSale(params.id as string)
+    }
+  }, [params.id])
 
   const handleRecordPayment = async (e: React.FormEvent) => {
     e.preventDefault()

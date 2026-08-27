@@ -35,10 +35,6 @@ export default function AddInventoryPage() {
     status: 'available' as 'available' | 'sold' | 'reserved' | 'maintenance',
   })
 
-  useEffect(() => {
-    fetchCategories()
-  }, [])
-
   const fetchCategories = async () => {
     try {
       const { data, error } = await supabase
@@ -53,6 +49,11 @@ export default function AddInventoryPage() {
       console.error('Error fetching categories:', error)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchCategories()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -200,7 +201,7 @@ export default function AddInventoryPage() {
                 <select
                   required
                   value={formData.vehicle_type}
-                  onChange={(e) => setFormData({ ...formData, vehicle_type: e.target.value as any })}
+                  onChange={(e) => setFormData({ ...formData, vehicle_type: e.target.value as 'Bike' | 'Rickshaw' | 'Battery' | 'Body Parts' | 'Other' })}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="Bike">Bike</option>
@@ -217,7 +218,7 @@ export default function AddInventoryPage() {
                 </label>
                 <select
                   value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value as 'available' | 'sold' | 'reserved' | 'maintenance' })}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="available">Available</option>

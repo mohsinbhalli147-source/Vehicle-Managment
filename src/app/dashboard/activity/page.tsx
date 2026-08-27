@@ -18,10 +18,6 @@ export default function ActivityPage() {
   const [activities, setActivities] = useState<Activity[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchActivities()
-  }, [])
-
   const fetchActivities = async () => {
     try {
       const { data, error } = await supabase
@@ -51,6 +47,11 @@ export default function ActivityPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchActivities()
+  }, [])
 
   const getActionColor = (action: string) => {
     if (action.includes('Added') || action.includes('Created')) return 'bg-green-100 text-green-800'
@@ -106,7 +107,7 @@ export default function ActivityPage() {
         {/* Activity Timeline */}
         <div className="bg-white rounded-xl shadow-sm p-6 border">
           <div className="space-y-4">
-            {activities.map((activity, index) => (
+            {activities.map((activity) => (
               <div key={activity.id} className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
                   <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">

@@ -31,62 +31,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isConfigured, setIsConfigured] = useState(false)
   const router = useRouter()
 
-  useEffect(() => {
-    if (!supabase) {
-      setLoading(false)
-      setIsConfigured(false)
-      return
-    }
-
-    setIsConfigured(true)
-
-    // Check active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      if (session?.user) {
-        fetchProfile(session.user.id)
-      }
-      setLoading(false)
-    })
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user ?? null)
-      if (session?.user) {
-        await fetchProfile(session.user.id)
-      } else {
-        setProfile(null)
-      }
-      setLoading(false)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
-
   const fetchProfile = async (userId: string) => {
-    if (!supabase) return
     try {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .maybeSingle() // Use maybeSingle() to handle cases where profile doesn't exist
+        .maybeSingle()
 
       if (error) throw error
 
-      // If profile doesn't exist, create it automatically
       if (!data) {
         const { data: userData } = await supabase.auth.getUser()
-        if (userData.user) {
+        const loggedInUser = userData.user
+        if (loggedInUser) {
+          const fullName = loggedInUser.user_metadata?.full_name || loggedInUser.email?.split('@')[0] || 'User'
           const { data: newProfile, error: createError } = await supabase
             .from('profiles')
             .insert({
               id: userId,
-              email: userData.user.email,
-              full_name: userData.user.user_metadata?.full_name || userData.user.email?.split('@')[0] || 'User',
-              role: 'staff', // Default role
+              email: loggedInUser.email,
+              full_name: fullName,
+              role: 'staff',
               is_active: true,
             })
             .select()
@@ -105,6 +71,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Error fetching profile:', error)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsConfigured(true)
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+      if (session?.user) {
+        fetchProfile(session.user.id)
+      }
+      setLoading(false)
+    })
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      setUser(session?.user ?? null)
+      if (session?.user) {
+        await fetchProfile(session.user.id)
+      } else {
+        setProfile(null)
+      }
+      setLoading(false)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   const signIn = async (email: string, password: string) => {
     if (!supabase) throw new Error('Supabase is not configured')

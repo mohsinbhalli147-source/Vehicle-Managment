@@ -28,10 +28,6 @@ export default function StaffPage() {
     role: 'staff' as 'admin' | 'staff',
   })
 
-  useEffect(() => {
-    fetchStaff()
-  }, [])
-
   const fetchStaff = async () => {
     try {
       const { data, error } = await supabase
@@ -47,6 +43,11 @@ export default function StaffPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchStaff()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -347,7 +348,7 @@ export default function StaffPage() {
                   <select
                     required
                     value={formData.role}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
+                    onChange={(e) => setFormData({ ...formData, role: e.target.value as 'admin' | 'staff' })}
                     className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   >
                     <option value="staff">Staff</option>

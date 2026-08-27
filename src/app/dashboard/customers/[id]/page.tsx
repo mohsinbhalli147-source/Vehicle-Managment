@@ -35,12 +35,6 @@ export default function CustomerDetailPage() {
   const [customer, setCustomer] = useState<Customer | null>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    if (params.id) {
-      fetchCustomer(params.id as string)
-    }
-  }, [params.id])
-
   const fetchCustomer = async (id: string) => {
     try {
       const { data: customerData, error: customerError } = await supabase
@@ -90,6 +84,13 @@ export default function CustomerDetailPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (params.id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchCustomer(params.id as string)
+    }
+  }, [params.id])
 
   const handleDelete = async () => {
     if (!confirm('Are you sure you want to delete this customer? This will also delete their sales history.')) return

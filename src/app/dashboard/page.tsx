@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { supabase } from '@/lib/supabase'
 import { 
@@ -36,6 +36,33 @@ interface RecentActivity {
   performed_by_name: string
 }
 
+interface StatCardProps {
+  title: string
+  value: string | number
+  icon: React.ComponentType<{ className?: string }>
+  color: string
+}
+
+function StatCard({ title, value, icon: Icon, color }: StatCardProps) {
+  return (
+    <div className="bg-white rounded-xl shadow-sm p-6 border">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium text-gray-600">{title}</p>
+          <p className="text-2xl font-bold text-gray-900 mt-1">
+            {typeof value === 'number' && title.includes('Rs.')
+              ? `Rs. ${value.toLocaleString()}`
+              : value}
+          </p>
+        </div>
+        <div className={`p-3 rounded-lg ${color}`}>
+          <Icon className="h-6 w-6 text-white" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats>({
     totalInventory: 0,
@@ -49,17 +76,7 @@ export default function DashboardPage() {
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    if (!supabase) {
-      setLoading(false)
-      return
-    }
-    fetchDashboardData()
-  }, [])
-
   const fetchDashboardData = async () => {
-    if (!supabase) return
-
     try {
       const today = new Date().toISOString().split('T')[0]
 
@@ -179,23 +196,10 @@ export default function DashboardPage() {
     }
   }
 
-  const StatCard = ({ title, value, icon: Icon, color }: any) => (
-    <div className="bg-white rounded-xl shadow-sm p-6 border">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">
-            {typeof value === 'number' && title.includes('Rs.') 
-              ? `Rs. ${value.toLocaleString()}` 
-              : value}
-          </p>
-        </div>
-        <div className={`p-3 rounded-lg ${color}`}>
-          <Icon className="h-6 w-6 text-white" />
-        </div>
-      </div>
-    </div>
-  )
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchDashboardData()
+  }, [])
 
   if (!supabase) {
     return (

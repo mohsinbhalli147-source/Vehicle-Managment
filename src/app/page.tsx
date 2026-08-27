@@ -18,8 +18,8 @@ export default function LoginPage() {
 
     try {
       await signIn(email, password)
-    } catch (err: any) {
-      setError(err.message || 'Failed to sign in')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to sign in')
     } finally {
       setLoading(false)
     }
@@ -47,7 +47,7 @@ export default function LoginPage() {
                 <p className="mb-4">To use this application, you need to set up Supabase:</p>
                 <ol className="list-decimal list-inside space-y-2 text-left">
                   <li>Create a free account at <a href="https://supabase.com" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">supabase.com</a></li>
-                  <li>Create a new project called "vehicle-management"</li>
+                  <li>Create a new project called &quot;vehicle-management&quot;</li>
                   <li>Go to Settings → API and copy your Project URL and anon key</li>
                   <li>Update the <code className="bg-yellow-100 px-1 rounded">.env.local</code> file with your credentials</li>
                   <li>Run the database migration from <code className="bg-yellow-100 px-1 rounded">supabase/migrations/001_initial_schema.sql</code></li>

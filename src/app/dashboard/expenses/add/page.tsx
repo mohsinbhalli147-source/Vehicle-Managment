@@ -25,10 +25,6 @@ export default function AddExpensePage() {
     expense_date: new Date().toISOString().split('T')[0],
   })
 
-  useEffect(() => {
-    fetchInventoryItems()
-  }, [])
-
   const fetchInventoryItems = async () => {
     try {
       const { data, error } = await supabase
@@ -42,6 +38,11 @@ export default function AddExpensePage() {
       console.error('Error fetching inventory:', error)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchInventoryItems()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

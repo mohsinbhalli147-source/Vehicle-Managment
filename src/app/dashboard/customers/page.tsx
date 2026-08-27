@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { supabase } from '@/lib/supabase'
-import { Plus, Search, Eye, Phone, Mail } from 'lucide-react'
+import { Plus, Search, Eye, Phone } from 'lucide-react'
 import Link from 'next/link'
 
 interface Customer {
@@ -21,10 +21,6 @@ export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-
-  useEffect(() => {
-    fetchCustomers()
-  }, [])
 
   const fetchCustomers = async () => {
     try {
@@ -63,6 +59,11 @@ export default function CustomersPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchCustomers()
+  }, [])
 
   const filteredCustomers = customers.filter(customer =>
     customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

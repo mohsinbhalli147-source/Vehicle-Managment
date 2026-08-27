@@ -27,10 +27,6 @@ export default function SettingsPage() {
     date_format: 'DD/MM/YYYY',
   })
 
-  useEffect(() => {
-    fetchSettings()
-  }, [])
-
   const fetchSettings = async () => {
     try {
       const { data, error } = await supabase
@@ -54,6 +50,11 @@ export default function SettingsPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchSettings()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

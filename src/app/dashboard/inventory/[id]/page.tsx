@@ -35,12 +35,6 @@ export default function InventoryDetailPage() {
   const [item, setItem] = useState<InventoryItem | null>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    if (params.id) {
-      fetchItem(params.id as string)
-    }
-  }, [params.id])
-
   const fetchItem = async (id: string) => {
     try {
       const { data, error } = await supabase
@@ -64,6 +58,13 @@ export default function InventoryDetailPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (params.id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchItem(params.id as string)
+    }
+  }, [params.id])
 
   const handleDelete = async () => {
     if (!confirm('Are you sure you want to delete this item?')) return

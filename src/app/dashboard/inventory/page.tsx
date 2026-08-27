@@ -6,34 +6,12 @@ import { useInventory, useCategories, useDeleteInventory } from '@/hooks/useInve
 import {
   Plus,
   Search,
-  Filter,
   Edit,
   Trash2,
   Eye,
   Download
 } from 'lucide-react'
 import Link from 'next/link'
-
-interface Category {
-  id: string
-  name: string
-}
-
-interface InventoryItem {
-  id: string
-  brand: string
-  model: string
-  model_year: number
-  color: string
-  chassis_number: string
-  engine_number: string
-  registration_number: string
-  purchase_price: number
-  sale_price: number
-  status: 'available' | 'sold' | 'reserved' | 'maintenance'
-  category_name?: string
-  vehicle_type: string
-}
 
 export default function InventoryPage() {
   const { data: inventoryData, isLoading: inventoryLoading } = useInventory()

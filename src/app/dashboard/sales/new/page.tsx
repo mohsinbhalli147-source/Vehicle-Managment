@@ -40,11 +40,6 @@ export default function NewSalePage() {
     address: '',
   })
 
-  useEffect(() => {
-    fetchCustomers()
-    fetchInventoryItems()
-  }, [])
-
   const fetchCustomers = async () => {
     try {
       const { data, error } = await supabase
@@ -73,6 +68,12 @@ export default function NewSalePage() {
       console.error('Error fetching inventory:', error)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchCustomers()
+    fetchInventoryItems()
+  }, [])
 
   const handleAddCustomer = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -176,7 +177,6 @@ export default function NewSalePage() {
     }
   }
 
-  const selectedItem = inventoryItems.find(item => item.id === formData.inventory_item_id)
   const salePrice = parseFloat(formData.sale_price) || 0
   const receivedAmount = parseFloat(formData.received_amount) || 0
   const remainingAmount = salePrice - receivedAmount

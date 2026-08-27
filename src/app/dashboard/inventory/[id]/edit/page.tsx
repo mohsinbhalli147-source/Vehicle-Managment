@@ -12,25 +12,9 @@ interface Category {
   name: string
 }
 
-interface InventoryItem {
-  id: string
-  category_id: string
-  brand: string
-  model: string
-  model_year: number
-  color: string
-  chassis_number: string
-  engine_number: string
-  registration_number: string
-  mileage: number
-  supplier: string
-  purchase_date: string
-  purchase_price: number
-  sale_price: number
-  vehicle_type: string
-  notes: string
-  status: string
-}
+
+
+
 
 export default function EditInventoryPage() {
   const router = useRouter()
@@ -56,13 +40,6 @@ export default function EditInventoryPage() {
     notes: '',
     status: 'available' as 'available' | 'sold' | 'reserved' | 'maintenance',
   })
-
-  useEffect(() => {
-    fetchCategories()
-    if (params.id) {
-      fetchItem(params.id as string)
-    }
-  }, [params.id])
 
   const fetchCategories = async () => {
     try {
@@ -113,6 +90,14 @@ export default function EditInventoryPage() {
       setFetchLoading(false)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchCategories()
+    if (params.id) {
+      fetchItem(params.id as string)
+    }
+  }, [params.id])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -263,7 +248,7 @@ export default function EditInventoryPage() {
                 <select
                   required
                   value={formData.vehicle_type}
-                  onChange={(e) => setFormData({ ...formData, vehicle_type: e.target.value as any })}
+                  onChange={(e) => setFormData({ ...formData, vehicle_type: e.target.value as 'Bike' | 'Rickshaw' | 'Battery' | 'Body Parts' | 'Other' })}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="Bike">Bike</option>
@@ -280,7 +265,7 @@ export default function EditInventoryPage() {
                 </label>
                 <select
                   value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value as 'available' | 'sold' | 'reserved' | 'maintenance' })}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="available">Available</option>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { supabase } from '@/lib/supabase'
-import { useRouter, useParams } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { ArrowLeft, Car, Calendar, User, DollarSign, CheckCircle, Plus } from 'lucide-react'
 import Link from 'next/link'
 
@@ -34,7 +34,6 @@ interface Rental {
 }
 
 export default function RentalDetailPage() {
-  const router = useRouter()
   const params = useParams()
   const [rental, setRental] = useState<Rental | null>(null)
   const [loading, setLoading] = useState(true)
@@ -44,12 +43,6 @@ export default function RentalDetailPage() {
   const [paymentAmount, setPaymentAmount] = useState('')
   const [paymentNotes, setPaymentNotes] = useState('')
   const [processing, setProcessing] = useState(false)
-
-  useEffect(() => {
-    if (params.id) {
-      fetchRental(params.id as string)
-    }
-  }, [params.id])
 
   const fetchRental = async (id: string) => {
     try {
@@ -121,6 +114,13 @@ export default function RentalDetailPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (params.id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchRental(params.id as string)
+    }
+  }, [params.id])
 
   const handleReturnVehicle = async (e: React.FormEvent) => {
     e.preventDefault()

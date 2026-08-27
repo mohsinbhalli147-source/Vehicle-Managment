@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { supabase } from '@/lib/supabase'
-import { Plus, Edit, Trash2, PlusCircle } from 'lucide-react'
+import { Edit, Trash2, PlusCircle } from 'lucide-react'
 
 interface Category {
   id: string
@@ -24,10 +24,6 @@ export default function CategoriesPage() {
     description: '',
     category_type: 'vehicle' as 'vehicle' | 'parts' | 'batteries' | 'other',
   })
-
-  useEffect(() => {
-    fetchCategories()
-  }, [])
 
   const fetchCategories = async () => {
     try {
@@ -60,6 +56,11 @@ export default function CategoriesPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchCategories()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -103,7 +104,7 @@ export default function CategoriesPage() {
     setFormData({
       name: category.name,
       description: category.description || '',
-      category_type: (category.category_type as any) || 'vehicle',
+      category_type: (category.category_type as 'vehicle' | 'parts' | 'batteries' | 'other') || 'vehicle',
     })
     setShowAddModal(true)
   }
@@ -250,7 +251,7 @@ export default function CategoriesPage() {
                   </label>
                   <select
                     value={formData.category_type}
-                    onChange={(e) => setFormData({ ...formData, category_type: e.target.value as any })}
+                    onChange={(e) => setFormData({ ...formData, category_type: e.target.value as 'vehicle' | 'parts' | 'batteries' | 'other' })}
                     className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   >
                     <option value="vehicle">Vehicle</option>
@@ -283,7 +284,7 @@ export default function CategoriesPage() {
                     onClick={() => {
                       setShowAddModal(false)
                       setEditingCategory(null)
-                      setFormData({ name: '', description: '' })
+                      setFormData({ name: '', description: '', category_type: 'vehicle' })
                     }}
                     className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300"
                   >

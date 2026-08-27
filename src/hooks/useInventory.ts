@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 
+type InventoryInput = Record<string, unknown>
+
 // Optimized inventory fetching with caching
 export function useInventory() {
   return useQuery({
@@ -44,7 +46,7 @@ export function useAddInventory() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: InventoryInput) => {
       const { error } = await supabase
         .from('inventory_items')
         .insert(data)
@@ -61,7 +63,7 @@ export function useUpdateInventory() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+    mutationFn: async ({ id, data }: { id: string; data: InventoryInput }) => {
       const { error } = await supabase
         .from('inventory_items')
         .update(data)

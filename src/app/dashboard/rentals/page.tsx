@@ -26,10 +26,6 @@ export default function RentalsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
 
-  useEffect(() => {
-    fetchRentals()
-  }, [])
-
   const fetchRentals = async () => {
     try {
       const { data, error } = await supabase
@@ -79,6 +75,11 @@ export default function RentalsPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchRentals()
+  }, [])
 
   const filteredRentals = rentals.filter(rental => {
     const matchesSearch = 

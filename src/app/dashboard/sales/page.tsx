@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { supabase } from '@/lib/supabase'
-import { Plus, Search, Filter, Download, Eye } from 'lucide-react'
+import { Plus, Search, Download, Eye } from 'lucide-react'
 import Link from 'next/link'
 
 interface Sale {
@@ -24,10 +24,6 @@ export default function SalesPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [dateFilter, setDateFilter] = useState('all')
 
-  useEffect(() => {
-    fetchSales()
-  }, [])
-
   const fetchSales = async () => {
     try {
       const { data, error } = await supabase
@@ -42,9 +38,9 @@ export default function SalesPage() {
       if (error) throw error
 
       const salesWithDetails = data?.map(sale => {
-        const status = sale.remaining_amount === 0 ? 'completed' : 
+        const status: Sale['status'] = sale.remaining_amount === 0 ? 'completed' :
                        sale.received_amount > 0 ? 'partial' : 'pending'
-        
+
         return {
           id: sale.id,
           sale_number: sale.sale_number,
@@ -65,6 +61,11 @@ export default function SalesPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchSales()
+  }, [])
 
   const filteredSales = sales.filter(sale => {
     const matchesSearch = 

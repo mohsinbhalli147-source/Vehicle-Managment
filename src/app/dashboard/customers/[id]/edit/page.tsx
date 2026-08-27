@@ -7,15 +7,6 @@ import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Save } from 'lucide-react'
 import Link from 'next/link'
 
-interface Customer {
-  id: string
-  name: string
-  phone: string
-  cnic: string
-  address: string
-  notes: string
-}
-
 export default function EditCustomerPage() {
   const router = useRouter()
   const params = useParams()
@@ -28,12 +19,6 @@ export default function EditCustomerPage() {
     address: '',
     notes: '',
   })
-
-  useEffect(() => {
-    if (params.id) {
-      fetchCustomer(params.id as string)
-    }
-  }, [params.id])
 
   const fetchCustomer = async (id: string) => {
     try {
@@ -58,6 +43,13 @@ export default function EditCustomerPage() {
       setFetchLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (params.id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchCustomer(params.id as string)
+    }
+  }, [params.id])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

@@ -43,11 +43,6 @@ export default function NewRentalPage() {
     address: '',
   })
 
-  useEffect(() => {
-    fetchCustomers()
-    fetchInventoryItems()
-  }, [])
-
   const fetchCustomers = async () => {
     try {
       const { data, error } = await supabase
@@ -76,6 +71,12 @@ export default function NewRentalPage() {
       console.error('Error fetching inventory:', error)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchCustomers()
+    fetchInventoryItems()
+  }, [])
 
   const handleAddCustomer = async (e: React.FormEvent) => {
     e.preventDefault()

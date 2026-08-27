@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { supabase } from '@/lib/supabase'
-import { Search, DollarSign } from 'lucide-react'
+import { Search } from 'lucide-react'
 
 interface Payment {
   id: string
@@ -20,10 +20,6 @@ export default function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-
-  useEffect(() => {
-    fetchPayments()
-  }, [])
 
   const fetchPayments = async () => {
     try {
@@ -58,6 +54,11 @@ export default function PaymentsPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchPayments()
+  }, [])
 
   const filteredPayments = payments.filter(payment =>
     payment.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||

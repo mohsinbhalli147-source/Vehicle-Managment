@@ -22,10 +22,6 @@ export default function ExpensesPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
 
-  useEffect(() => {
-    fetchExpenses()
-  }, [])
-
   const fetchExpenses = async () => {
     try {
       const { data, error } = await supabase
@@ -56,6 +52,11 @@ export default function ExpensesPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchExpenses()
+  }, [])
 
   const filteredExpenses = expenses.filter(expense => {
     const matchesSearch = 
