@@ -7,8 +7,7 @@
     "build": "next build",
     "export": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "deploy": "npm run build && node copy-build.js && firebase deploy"
+    "lint": "eslint"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.5",

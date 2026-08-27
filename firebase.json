@@ -1,23 +1,5 @@
 {
   "projects": {
     "default": "sardar-autos"
-  },
-  "functions": {
-    "source": "functions",
-    "runtime": "nodejs20"
-  },
-  "hosting": {
-    "public": "public",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "function": "nextjsServer"
-      }
-    ]
   }
 }
