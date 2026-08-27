@@ -2,8 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ['127.0.0.1'],
-  // Vercel-specific optimizations
-  reactStrictMode: true,
+  // Standard Next.js for production hosting
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;
