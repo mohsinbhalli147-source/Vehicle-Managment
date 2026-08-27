@@ -82,6 +82,52 @@ npm run dev
 
 7. Open [http://localhost:3000](http://localhost:3000) in your browser
 
+### Running locally as a static build
+```bash
+npm run build        # generates static export into ./out
+npm run start        # serves ./out locally (preview)
+```
+
+## Deploy to Firebase Hosting
+
+This app is a **static SPA** (Next.js `output: "export"`) and is deployed to
+**Firebase Hosting** while **Supabase** remains the backend (database + auth).
+Firebase Hosting and Supabase work together perfectly:
+- Firebase only serves the static files (HTML/JS/CSS).
+- Supabase still handles the database, authentication, and Row-Level Security.
+- The browser talks to Supabase directly using the public anon key (never expose
+  the service-role key).
+
+### One-time setup
+1. Install the Firebase CLI:
+   ```bash
+   npm install -g firebase-tools
+   ```
+2. Log in:
+   ```bash
+   firebase login
+   ```
+3. Confirm the project is selected (`sardar-autos`, set in `.firebaserc`):
+   ```bash
+   firebase use default
+   ```
+
+### Build & deploy
+```bash
+firebase deploy --only hosting
+# or: npm run deploy
+```
+
+After deploy you will get a URL like:
+`https://sardar-autos.web.app` (and `sardar-autos.firebaseapp.com`).
+
+### Important notes
+- Never commit the service-role key. Only `NEXT_PUBLIC_*` (public) keys live in
+  `.env.local` (see `.env.example`).
+- `firebase.json` points at the `out/` directory with an SPA fallback rewrite to
+  `404.html` so routes like `/dashboard/sales/view?id=...` work on a hard refresh.
+- Rebuild before every deploy (`npm run build`) so `out/` is current.
+
 ## Database Schema
 
 The application uses the following main tables:

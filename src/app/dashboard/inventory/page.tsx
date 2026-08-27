@@ -204,14 +204,14 @@ export default function InventoryPage() {
                     <td className="py-4 px-4">
                       <div className="flex items-center justify-center space-x-2">
                         <Link
-                          href={`/dashboard/inventory/${item.id}`}
+                          href={`/dashboard/inventory/view?id=${item.id}`}
                           className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg"
                           title="View"
                         >
                           <Eye className="h-4 w-4" />
                         </Link>
                         <Link
-                          href={`/dashboard/inventory/${item.id}/edit`}
+                          href={`/dashboard/inventory/edit?id=${item.id}`}
                           className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
                           title="Edit"
                         >

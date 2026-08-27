@@ -212,7 +212,7 @@ export default function RentalsPage() {
                     <td className="py-4 px-4">
                       <div className="flex items-center justify-center space-x-2">
                         <Link
-                          href={`/dashboard/rentals/${rental.id}`}
+                          href={`/dashboard/rentals/view?id=${rental.id}`}
                           className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg"
                           title="View Details"
                         >

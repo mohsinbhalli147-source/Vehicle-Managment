@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { supabase } from '@/lib/supabase'
-import { useParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { ArrowLeft, Car, Calendar, User, DollarSign, CheckCircle, Plus } from 'lucide-react'
 import Link from 'next/link'
 
@@ -33,8 +33,9 @@ interface Rental {
   }>
 }
 
-export default function RentalDetailPage() {
-  const params = useParams()
+function RentalDetailComponent() {
+  const searchParams = useSearchParams()
+  const id = searchParams.get('id')
   const [rental, setRental] = useState<Rental | null>(null)
   const [loading, setLoading] = useState(true)
   const [showReturnModal, setShowReturnModal] = useState(false)
@@ -116,11 +117,11 @@ export default function RentalDetailPage() {
   }
 
   useEffect(() => {
-    if (params.id) {
+    if (id) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      fetchRental(params.id as string)
+      fetchRental(id)
     }
-  }, [params.id])
+  }, [id])
 
   const handleReturnVehicle = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -155,7 +156,7 @@ export default function RentalDetailPage() {
       })
 
       setShowReturnModal(false)
-      fetchRental(params.id as string)
+      fetchRental(id as string)
     } catch (error) {
       console.error('Error returning vehicle:', error)
       alert('Failed to return vehicle')
@@ -213,7 +214,7 @@ export default function RentalDetailPage() {
       setPaymentAmount('')
       setPaymentNotes('')
       setShowPaymentModal(false)
-      fetchRental(params.id as string)
+      fetchRental(id as string)
     } catch (error) {
       console.error('Error recording payment:', error)
       alert('Failed to record payment')
@@ -554,5 +555,13 @@ export default function RentalDetailPage() {
         )}
       </div>
     </DashboardLayout>
+  )
+}
+
+export default function RentalDetailPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div></div>}>
+      <RentalDetailComponent />
+    </Suspense>
   )
 }

@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { supabase } from '@/lib/supabase'
-import { useRouter, useParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { ArrowLeft, Save } from 'lucide-react'
 import Link from 'next/link'
 
@@ -16,9 +16,10 @@ interface Category {
 
 
 
-export default function EditInventoryPage() {
+function EditInventoryForm() {
   const router = useRouter()
-  const params = useParams()
+  const searchParams = useSearchParams()
+  const id = searchParams.get('id')
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(false)
   const [fetchLoading, setFetchLoading] = useState(true)
@@ -94,10 +95,10 @@ export default function EditInventoryPage() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchCategories()
-    if (params.id) {
-      fetchItem(params.id as string)
+    if (id) {
+      fetchItem(id)
     }
-  }, [params.id])
+  }, [id])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -124,7 +125,7 @@ export default function EditInventoryPage() {
           notes: formData.notes || null,
           status: formData.status,
         })
-        .eq('id', params.id)
+        .eq('id', id)
 
       if (error) throw error
 
@@ -132,11 +133,11 @@ export default function EditInventoryPage() {
       await supabase.rpc('log_activity', {
         p_action: 'Item Updated',
         p_entity_type: 'inventory',
-        p_entity_id: params.id as string,
+        p_entity_id: id,
         p_description: `${formData.brand} ${formData.model} details updated`,
       })
 
-      router.push(`/dashboard/inventory/${params.id}`)
+      router.push(`/dashboard/inventory/view?id=${id}`)
     } catch (error) {
       console.error('Error updating item:', error)
       alert('Failed to update item. Please try again.')
@@ -160,7 +161,7 @@ export default function EditInventoryPage() {
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
           <Link
-            href={`/dashboard/inventory/${params.id}`}
+            href={`/dashboard/inventory/view?id=${id}`}
             className="inline-flex items-center text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
@@ -404,7 +405,7 @@ export default function EditInventoryPage() {
           {/* Submit */}
           <div className="flex justify-end space-x-3">
             <Link
-              href={`/dashboard/inventory/${params.id}`}
+              href={`/dashboard/inventory/view?id=${id}`}
               className="px-6 py-2 border rounded-lg hover:bg-gray-50"
             >
               Cancel
@@ -421,5 +422,13 @@ export default function EditInventoryPage() {
         </form>
       </div>
     </DashboardLayout>
+  )
+}
+
+export default function EditInventoryPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div></div>}>
+      <EditInventoryForm />
+    </Suspense>
   )
 }

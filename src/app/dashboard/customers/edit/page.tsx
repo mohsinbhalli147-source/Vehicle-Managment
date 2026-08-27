@@ -1,15 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { supabase } from '@/lib/supabase'
-import { useRouter, useParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { ArrowLeft, Save } from 'lucide-react'
 import Link from 'next/link'
 
-export default function EditCustomerPage() {
+function EditCustomerForm() {
   const router = useRouter()
-  const params = useParams()
+  const searchParams = useSearchParams()
+  const id = searchParams.get('id')
   const [loading, setLoading] = useState(false)
   const [fetchLoading, setFetchLoading] = useState(true)
   const [formData, setFormData] = useState({
@@ -45,11 +46,11 @@ export default function EditCustomerPage() {
   }
 
   useEffect(() => {
-    if (params.id) {
+    if (id) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      fetchCustomer(params.id as string)
+      fetchCustomer(id)
     }
-  }, [params.id])
+  }, [id])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -65,11 +66,11 @@ export default function EditCustomerPage() {
           address: formData.address || null,
           notes: formData.notes || null,
         })
-        .eq('id', params.id)
+        .eq('id', id)
 
       if (error) throw error
 
-      router.push(`/dashboard/customers/${params.id}`)
+      router.push(`/dashboard/customers/view?id=${id}`)
     } catch (error) {
       console.error('Error updating customer:', error)
       alert('Failed to update customer. Please try again.')
@@ -93,7 +94,7 @@ export default function EditCustomerPage() {
       <div className="max-w-2xl mx-auto">
         <div className="mb-6">
           <Link
-            href={`/dashboard/customers/${params.id}`}
+            href={`/dashboard/customers/view?id=${id}`}
             className="inline-flex items-center text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
@@ -168,7 +169,7 @@ export default function EditCustomerPage() {
 
           <div className="flex justify-end space-x-3">
             <Link
-              href={`/dashboard/customers/${params.id}`}
+              href={`/dashboard/customers/view?id=${id}`}
               className="px-6 py-2 border rounded-lg hover:bg-gray-50"
             >
               Cancel
@@ -185,5 +186,13 @@ export default function EditCustomerPage() {
         </form>
       </div>
     </DashboardLayout>
+  )
+}
+
+export default function EditCustomerPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div></div>}>
+      <EditCustomerForm />
+    </Suspense>
   )
 }

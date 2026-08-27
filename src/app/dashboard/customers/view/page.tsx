@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { supabase } from '@/lib/supabase'
-import { useRouter, useParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { ArrowLeft, Edit, Trash2, Phone, Mail, MapPin, DollarSign, ShoppingCart } from 'lucide-react'
 import Link from 'next/link'
 
@@ -29,9 +29,10 @@ interface Customer {
   }>
 }
 
-export default function CustomerDetailPage() {
+function CustomerDetailComponent() {
   const router = useRouter()
-  const params = useParams()
+  const searchParams = useSearchParams()
+  const id = searchParams.get('id')
   const [customer, setCustomer] = useState<Customer | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -86,11 +87,11 @@ export default function CustomerDetailPage() {
   }
 
   useEffect(() => {
-    if (params.id) {
+    if (id) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      fetchCustomer(params.id as string)
+      fetchCustomer(id)
     }
-  }, [params.id])
+  }, [id])
 
   const handleDelete = async () => {
     if (!confirm('Are you sure you want to delete this customer? This will also delete their sales history.')) return
@@ -154,7 +155,7 @@ export default function CustomerDetailPage() {
           </div>
           <div className="flex space-x-2">
             <Link
-              href={`/dashboard/customers/${customer.id}/edit`}
+              href={`/dashboard/customers/edit?id=${customer.id}`}
               className="inline-flex items-center px-4 py-2 border rounded-lg hover:bg-gray-50"
             >
               <Edit className="h-5 w-5 mr-2" />
@@ -317,5 +318,13 @@ export default function CustomerDetailPage() {
         </div>
       </div>
     </DashboardLayout>
+  )
+}
+
+export default function CustomerDetailPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div></div>}>
+      <CustomerDetailComponent />
+    </Suspense>
   )
 }

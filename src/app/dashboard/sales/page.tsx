@@ -212,7 +212,7 @@ export default function SalesPage() {
                     <td className="py-4 px-4">
                       <div className="flex items-center justify-center space-x-2">
                         <Link
-                          href={`/dashboard/sales/${sale.id}`}
+                          href={`/dashboard/sales/view?id=${sale.id}`}
                           className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg"
                           title="View Details"
                         >
